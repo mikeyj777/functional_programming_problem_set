@@ -5,6 +5,7 @@ import Functional from './components/Functional';
 import Func001 from './components/001';
 import Func002 from './components/002';
 import Func003 from './components/003';
+import Func004 from './components/004';
 import './App.css';
 import './styles/global.css';
 
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/001" element={<Func001 />} />
           <Route path="/002" element={<Func002 />} />
           <Route path="/003" element={<Func003 />} />
+          <Route path="/004" element={<Func004 />} />
         </Routes>
       </div>
     </Router>
