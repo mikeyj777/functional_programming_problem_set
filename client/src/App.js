@@ -8,6 +8,7 @@ import Func003 from './components/003';
 import Func004 from './components/004';
 import Func005 from './components/005';
 import Func006 from './components/006';
+import Func007 from './components/007';
 import './App.css';
 import './styles/global.css';
 
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/004" element={<Func004 />} />
           <Route path="/005" element={<Func005 />} />
           <Route path="/006" element={<Func006 />} />
+          <Route path="/007" element={<Func007 />} />
         </Routes>
       </div>
     </Router>
