@@ -13,7 +13,8 @@ import React, { useState, useEffect } from 'react';
 //  1.  { ...prevObject, newObect} can be used to add a new property to a create a new object.
 //  2.  { ...prevObject, [key]: value } - the brackets allow the interpreter to infer the key 
 //                                    name based on the variable value.
-//  3.  the map function providese 3 arguments, the current iteration element
+//  3.  the map function providese 3 arguments, the current iteration element, the index, and the complete array.  
+//        - the current iteration element can be deconstructed (array, dict, etc.)
 
 
 const Func009 = ({str = "Hello World" }) => {
