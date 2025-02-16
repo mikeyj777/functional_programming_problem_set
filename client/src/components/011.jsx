@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useFetcher } from 'react-router-dom';
 
 // notes for claude:
 // functional programming problem set.
@@ -10,9 +11,10 @@ import React, { useState, useEffect } from 'react';
 // another note for claude:  confirm that the method below is the correct approach for the stated problem.
 
 
-const Func011 = ({ upperLim = 100 }) => {
+const Func011 = ({ upperLim = 200 }) => {
 
   const [finalAns, setFinalAns] = useState(0);
+  const [fibs, setFibs] = useState([]);
 
   const fibSeqGenerator = () => {
     const seq = Array.from({ length: upperLim})
@@ -20,28 +22,37 @@ const Func011 = ({ upperLim = 100 }) => {
         const nexFib = seq[seq.length - 2] + seq[seq.length - 1];
         return nexFib < upperLim ? [...seq, nexFib] : seq;
       }, [0, 1]);
+      return seq;
   }
 
-  useEffect(
+  useEffect(() => {
 
-    const fibSeek = fibSeqGenerator();
+    setFibs(fibSeqGenerator());
+
+  },[upperLim] )
+
+  useEffect(() => {
 
     setFinalAns(
-      fibSeek
+      fibs
         .filter(elem => elem % 2 === 0)
-        .
-    )
+        .filter(elem => elem < upperLim)
+        .reduce((accum, currValue) => accum + currValue, 0)
+    );
 
-  )
+  }, [fibs])
 
   return (
     <div className="func-container">
       <div className="func-card">
-        <h1 className="func-text">Original array: {arr.join(", ")}</h1>
+        <h1 className="func-text">upper limit: {upperLim}</h1>
+      </div>
+      <div className="func-card">
+        <h1 className="func-text">fibonnachos: {fibs.join(', ')}</h1>
       </div>
       <div className="func-card">
         <h1 className="func-text">
-          {finalAns}
+          sum of even fibs: {finalAns}
         </h1>
       </div>
     </div>
