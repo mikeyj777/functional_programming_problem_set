@@ -14,6 +14,7 @@ import Func009 from './components/009';
 import Func010 from './components/010';
 import Func011 from './components/011';
 import Func012 from './components/012';
+import Func013 from './components/013';
 import './App.css';
 import './styles/global.css';
 
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/010" element={<Func010 />} />
           <Route path="/011" element={<Func011 />} />
           <Route path="/012" element={<Func012 />} />
+          <Route path="/013" element={<Func013 />} />
         </Routes>
       </div>
     </Router>
