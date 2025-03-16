@@ -13,31 +13,35 @@ import { inversePrimeCountingFunction } from '../utils/helpers';
 
 // Notes: 
 
-const Func014 = ({ val = 12 }) => {
+const Func014 = ({ val = 6 }) => {
 
-  const [finalAns, setFinalAns] = useState([]);
+  const [finalAns, setFinalAns] = useState(false);
   const [currentDivisors, setCurrentDivisors] = useState([]);
   const [currVal, setCurrVal] = useState(val);
+  const [inputValue, setInputValue] = useState(val);
   
   const getAnswer = () => {
     
     const testVals = Array.from({length: Math.floor(currVal / 2)}, (_, index) => index + 1);
     const divisors = testVals.reduce((divs, currTest) => {
-      const isDivisible = val % currTest == 0;
+      const isDivisible = currVal % currTest == 0;
       return isDivisible ? [...divs, currTest] : [...divs];
     }, [])
     
     setCurrentDivisors(divisors);
 
     const totVal = divisors.reduce((accum, currElem) => accum + currElem, 0);
-
-    return totVal == currVal;
+    return totVal === currVal;
     
   }
 
   useEffect(() => {
+    const ans = getAnswer();
     setFinalAns(getAnswer());
   }, [currVal]);
+
+  useEffect(() => {
+  }, [finalAns]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,10 +71,10 @@ const Func014 = ({ val = 12 }) => {
         <h1 className="func-text">divisors: {currentDivisors.join(' | ')}</h1>
       </div>
       <div className="func-card">
-        <h1 className="func-text">Perfect? {finalAns}</h1>
+        <h1 className="func-text">Perfect? {finalAns.toString()}</h1>
       </div>
     </div>
   );
 };
 
-export default Func013;
+export default Func014;
