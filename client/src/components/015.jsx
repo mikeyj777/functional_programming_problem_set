@@ -11,13 +11,13 @@ import { inversePrimeCountingFunction } from '../utils/helpers';
 
 // another note for claude:  confirm that the method below is the correct approach for the stated problem.
 
-const Func015 = ({ rangeMin = 1, rangeMax = 130 }) => {
+const Func015 = ({ rangeMin = 1, rangeMax = 20 }) => {
 
   const [finalAns, setFinalAns] = useState([]);
   const [currentRangeMin, setCurrentRangeMin] = useState(rangeMin);
   const [currentRangeMax, setCurrentRangeMax] = useState(rangeMax);
   const [inputValueMin, setInputValueMin] = useState(rangeMin);
-  const [inputValueMax, setInputValueMax] = useState(rangeMin);
+  const [inputValueMax, setInputValueMax] = useState(rangeMax);
   
   const getAnswer = () => {
     const minVal = Math.min(currentRangeMin, currentRangeMax);
@@ -26,16 +26,13 @@ const Func015 = ({ rangeMin = 1, rangeMax = 130 }) => {
     const triples = aVal.reduce((triplesSoFar, currAvalue, idx, arr) => {
       const triplesInner = arr.slice(idx+1).reduce((tripleTest, currBvalue) => {
         const c = Math.sqrt(currAvalue**2 + currBvalue**2);
-        if (c <= rangeMax && c % 1 == 0){
-          console.log([...tripleTest, [currAvalue, currBvalue, c]]);  
-        }
-        return c <= rangeMax && c % 1 == 0 ? [...tripleTest, [currAvalue, currBvalue, c]] : [...tripleTest];
+        return c <= maxVal && c % 1 == 0 ? [...tripleTest, [currAvalue, currBvalue, c]] : [...tripleTest];
       }, []);
       return triplesInner.length > 0 ? [...triplesSoFar, ...triplesInner] : [...triplesSoFar];
     }, []);
     return triples;
   }
-
+  
   useEffect(() => {
     setFinalAns(getAnswer());
   }, [currentRangeMin, currentRangeMax]);
@@ -62,13 +59,13 @@ const Func015 = ({ rangeMin = 1, rangeMax = 130 }) => {
         <form onSubmit={handleSubmitMin} className="input-form">
           <input
             type="number"
-            value={rangeMin}
+            value={inputValueMin}
             onChange={(e) => setInputValueMin(e.target.value)}
             className="func-input"
             min="1"
           />
           <button type="submit" className="func-button">
-            Bottom of Range
+            Boundary
           </button>
         </form>
       </div>
@@ -76,13 +73,13 @@ const Func015 = ({ rangeMin = 1, rangeMax = 130 }) => {
         <form onSubmit={handleSubmitMax} className="input-form">
           <input
             type="number"
-            value={rangeMax}
+            value={inputValueMax}
             onChange={(e) => setInputValueMax(e.target.value)}
             className="func-input"
             min="1"
           />
           <button type="submit" className="func-button">
-            Top of Range
+            Other Boundary
           </button>
         </form>
       </div>
