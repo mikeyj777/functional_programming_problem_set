@@ -11,7 +11,7 @@ import { inversePrimeCountingFunction } from '../utils/helpers';
 
 // another note for claude:  confirm that the method below is the correct approach for the stated problem.
 
-const Func014 = ({ val = 6 }) => {
+const Func014 = ({ val = 36 }) => {
 
   const [finalAns, setFinalAns] = useState(false);
   const [currentDivisors, setCurrentDivisors] = useState([]);
@@ -38,7 +38,7 @@ const Func014 = ({ val = 6 }) => {
   const countOfTimesDivisibleByPrimeFactor = (n, primeFactor, count = 0) => {
     if (n % primeFactor !== 0) return count;
     
-    return primeFactorization( n / primeFactor, primeFactor, count + 1);
+    return countOfTimesDivisibleByPrimeFactor( n / primeFactor, primeFactor, count + 1);
   } 
 
   const primesBelowVal = () => {
@@ -63,32 +63,40 @@ const Func014 = ({ val = 6 }) => {
       const isDivisible = accumulatedPrimes.some((prime) => prime <= Math.sqrt(currentElement) && currentElement % prime === 0);
       return isDivisible ? accumulatedPrimes : [...accumulatedPrimes, currentElement];
 
-    }, []).slice(0, currentNumPrimes);
+    }, []);
     return primesOut;
   };
 
+
+  // Claude assist in recursive solution for divisors.
+  const getDivisors = (facts2d, prod = 1, idx = 0) => {
+    if (idx == facts2d.length) return [prod];
+    
+    const divisorsForCurrPrime = [];
+    let [prime, exponent] = facts2d[idx];
+    prime = parseInt(prime);
+    exponent = parseInt(exponent);
+    for (let expon = 0; expon <= exponent; expon++) {
+      const factor = prime ** expon;
+      // console.log("prime: ", prime, " | exponent: ", expon, " | factor: ", factor, " | product: ", prod, " | prod * factor = ", prod*factor);
+
+      divisorsForCurrPrime.push(...getDivisors(facts2d, prod * factor, idx + 1));
+
+    }
+    return [...divisorsForCurrPrime];
+  }
+
   const getAnswerRecursive = () => {
     const primes = primesBelowVal();
-    const primeFactors = primes.reduce((primeFactorsSoFar, currPrime) => {
+    const primeFactorsDict = primes.reduce((primeFactorsDictSoFar, currPrime) => {
       const count = countOfTimesDivisibleByPrimeFactor(currVal, currPrime);
-      const copiedFactorsToAdd = Array.from( {length : count}, () => currPrime);
-      return [...primeFactorsSoFar, ...copiedFactorsToAdd];
-    }, []);
-    
-    const divisors = primeFactors.reduce((divs, currFactor, idx, arr) => {
-      const divsInner = arr.slice(idx + 1).map((value) => value * currFactor);
-      return [...divs, ...divsInner];
-    }, [1]);
-
-    const divisorsUnique = divisors
-      .filter((elem, idx, arr) => 
-        arr.slice(idx+1)
-          .every((fact) => fact !== elem));
-    
+      return count > 0 ? {...primeFactorsDictSoFar, [currPrime] : count } : {...primeFactorsDictSoFar};
+    }, {});
+    const divisors = getDivisors(Object.entries(primeFactorsDict));
+    const divisorsUnique = [...new Set(divisors)].sort((a, b) => a-b).filter((elem) => elem !== currVal);
+    setCurrentDivisors(divisorsUnique);
     const divTotal = divisorsUnique.reduce((accum, elem) => accum + elem, 0);
-
     return divTotal === currVal;
-
   }
 
   useEffect(() => {
