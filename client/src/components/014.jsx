@@ -34,10 +34,69 @@ const Func014 = ({ val = 6 }) => {
     return totVal === currVal;
     
   }
+  
+  const countOfTimesDivisibleByPrimeFactor = (n, primeFactor, count = 0) => {
+    if (n % primeFactor !== 0) return count;
+    
+    return primeFactorization( n / primeFactor, primeFactor, count + 1);
+  } 
+
+  const primesBelowVal = () => {
+    // using the 6n +/- 1 method, where 6n+1 will be in the range of largestPrimeEstimate
+    const maxN = Math.ceil(currVal / 6);
+    const sixNplus1 = Array.from({ length: maxN + 1 }, 
+      (_, index) => 6 * index + 1
+    );
+    const sixNminus1 = Array.from({ length: maxN + 1 }, 
+      (_, index) => 6 * index - 1
+    );
+    const primes = [2,3];
+    let seiveSeed = [...primes.concat(sixNminus1).concat(sixNplus1)].filter((elem) => elem > 1).sort((a, b) => a-b);
+    const primesOut = seiveSeed.reduce((accumulatedPrimes, currentElement) => {
+      // Array.some tests if any values in the array return true given the provided condition.  
+      // starting at the first value of seiveSeed, 2, ask if it can evenly divide any values of an empty array.  that returns false.
+      // since it is false, 2 is appended to the empty "accumulatedPrimes" array.
+      // going to next value of seiveSeed, 3, it is tested if any of the values in accumulated primes ([2]) can evenly divide 3.  
+      // also false and 3 is appended.
+      // some values in seiveSeed, such as 25, will be evenly divided by at least one value in accumulatedPrimes.  
+      // in the case of 25, 5 will evenly divide it.  htis returns true, and the existing accumulatedPrimes is returned without concatenating 25 to it.
+      const isDivisible = accumulatedPrimes.some((prime) => prime <= Math.sqrt(currentElement) && currentElement % prime === 0);
+      return isDivisible ? accumulatedPrimes : [...accumulatedPrimes, currentElement];
+
+    }, []).slice(0, currentNumPrimes);
+    return primesOut;
+  };
+
+  const getAnswerRecursive = () => {
+    const primes = primesBelowVal();
+    const primeFactors = primes.reduce((primeFactorsSoFar, currPrime) => {
+      const count = countOfTimesDivisibleByPrimeFactor(currVal, currPrime);
+      const copiedFactorsToAdd = Array.from( {length : count}, () => currPrime);
+      return [...primeFactorsSoFar, ...copiedFactorsToAdd];
+    }, []);
+    
+    const divisors = primeFactors.reduce((divs, currFactor, idx, arr) => {
+      const divsInner = arr.slice(idx + 1).map((value) => value * currFactor);
+      return [...divs, ...divsInner];
+    }, [1]);
+
+    const divisorsUnique = divisors
+      .filter((elem, idx, arr) => 
+        arr.slice(idx+1)
+          .every((fact) => fact !== elem));
+    
+    const divTotal = divisorsUnique.reduce((accum, elem) => accum + elem, 0);
+
+    return divTotal === currVal;
+
+  }
 
   useEffect(() => {
-    setFinalAns(getAnswer());
+    // setFinalAns(getAnswer());
+    setFinalAns(getAnswerRecursive());
   }, [currVal]);
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
