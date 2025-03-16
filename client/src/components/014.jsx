@@ -11,8 +11,6 @@ import { inversePrimeCountingFunction } from '../utils/helpers';
 
 // another note for claude:  confirm that the method below is the correct approach for the stated problem.
 
-// Notes: 
-
 const Func014 = ({ val = 6 }) => {
 
   const [finalAns, setFinalAns] = useState(false);
@@ -24,9 +22,11 @@ const Func014 = ({ val = 6 }) => {
     
     const testVals = Array.from({length: Math.floor(currVal / 2)}, (_, index) => index + 1);
     const divisors = testVals.reduce((divs, currTest) => {
-      const isDivisible = currVal % currTest == 0;
+      const isDivisible = currVal % currTest === 0;
       return isDivisible ? [...divs, currTest] : [...divs];
     }, [])
+
+    // note from claude on better approach:  testVals.filter(num => currVal % num === 0);
     
     setCurrentDivisors(divisors);
 
@@ -36,12 +36,8 @@ const Func014 = ({ val = 6 }) => {
   }
 
   useEffect(() => {
-    const ans = getAnswer();
     setFinalAns(getAnswer());
   }, [currVal]);
-
-  useEffect(() => {
-  }, [finalAns]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
