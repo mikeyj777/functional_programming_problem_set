@@ -17,68 +17,33 @@ const Func014 = ({ val = 12 }) => {
 
   const [finalAns, setFinalAns] = useState([]);
   const [currentDivisors, setCurrentDivisors] = useState([]);
+  const [currVal, setCurrVal] = useState(val);
   
   const getAnswer = () => {
     
-    // using the 6n +/- 1 method, where 6n+1 will be in the range of largestPrimeEstimate
-    const maxN = Math.ceil((val + 1) / 6);
-    console.log("maxN: ", maxN);
-    let seiveSeed = [...primes.concat(sixNminus1).concat(sixNplus1)].filter((elem) => elem > 1).sort((a, b) => a-b);
-    seiveSeed = seiveSeed.filter((elem) => elem != val);
-    const primes = seiveSeed.reduce((accumulatedPrimes, currentElement) => {
-      // Array.some tests if any values in the array return true given the provided condition.  
-      // starting at the first value of seiveSeed, 2, ask if it can evenly divide any values of an empty array.  that returns false.
-      // since it is false, 2 is appended to the empty "accumulatedPrimes" array.
-      // going to next value of seiveSeed, 3, it is tested if any of the values in accumulated primes ([2]) can evenly divide 3.  
-      // also false and 3 is appended.
-      // some values in seiveSeed, such as 25, will be evenly divided by at least one value in accumulatedPrimes.  
-      // in the case of 25, 5 will evenly divide it.  htis returns true, and the existing accumulatedPrimes is returned without concatenating 25 to it.
-      const isDivisible = accumulatedPrimes.some((prime) => prime <= Math.sqrt(currentElement) && currentElement % prime === 0);
-      return isDivisible ? accumulatedPrimes : [...accumulatedPrimes, currentElement];
-
-    }, []);
-
-    const divisorsDict = {
-      divisors: [1],
-      currVal: val,
-      currPrimeIdx: 0
-    }
-
-    while (divisorsDict[currVal] > 1) {
-      const testVal = divisorsDict[currVal];
-      const currPrimeIdx = divisorsDict[currPrimeIdx];
-      const currPrime = primes[currPrimeIdx];
-      const isDivisible = testVal % currPrime;
-      if (isDivisible) {
-        divisorsDict[currVal] = currVal / currPrime;
-      } else {
-        
-      }
-    }
+    const testVals = Array.from({length: Math.floor(currVal / 2)}, (_, index) => index + 1);
+    const divisors = testVals.reduce((divs, currTest) => {
+      const isDivisible = val % currTest == 0;
+      return isDivisible ? [...divs, currTest] : [...divs];
+    }, [])
     
-    // const divisorsDict = primes.reduce((divDict, currPrime) => {
-    //   const testVal = divDict[currVal];
-    //   const isDivisible = testVal % currPrime == 0;
-    //   return !isDivisible ? {...divDict} : divDict[divisors].reduce((divDict, currPrime) => {
+    setCurrentDivisors(divisors);
 
-    //   }) 
-    // }, {
-    //   divisors: [1],
-    //   currVal: val
-    // }
-    // );
+    const totVal = divisors.reduce((accum, currElem) => accum + currElem, 0);
+
+    return totVal == currVal;
     
   }
 
   useEffect(() => {
     setFinalAns(getAnswer());
-  }, [currentNumPrimes]);
+  }, [currVal]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newTarget = parseInt(inputValue);
     if (!isNaN(newTarget) && newTarget > 0) {
-      setCurrentNumPrimes(newTarget);
+      setCurrVal(newTarget);
     }
   };
 
@@ -94,12 +59,15 @@ const Func014 = ({ val = 12 }) => {
             min="1"
           />
           <button type="submit" className="func-button">
-            Number of Primes
+            Value to test for Perfection
           </button>
         </form>
       </div>
       <div className="func-card">
-        <h1 className="func-text">primes: {finalAns.join(' | ')}</h1>
+        <h1 className="func-text">divisors: {currentDivisors.join(' | ')}</h1>
+      </div>
+      <div className="func-card">
+        <h1 className="func-text">Perfect? {finalAns}</h1>
       </div>
     </div>
   );
