@@ -24,14 +24,15 @@ const Func015 = ({ rangeMin = 1, rangeMax = 20 }) => {
     const maxVal = Math.max(currentRangeMin, currentRangeMax);
     const aVal = Array.from( {length : maxVal - minVal + 1}, (_, idx) =>   idx + minVal);
     const triples = aVal.reduce((triplesSoFar, currAvalue, idx, arr) => {
-      const triplesInner = arr.slice(idx+1).reduce((tripleTest, currBvalue) => {
+      const maxBval = Math.sqrt(maxVal**2 - currAvalue**2);
+      const triplesInner = arr.slice(idx+1).filter((val) => val < maxBval).reduce((tripleTest, currBvalue) => {
         const c = Math.sqrt(currAvalue**2 + currBvalue**2);
         return c <= maxVal && c % 1 == 0 ? [...tripleTest, [currAvalue, currBvalue, c]] : [...tripleTest];
       }, []);
       return triplesInner.length > 0 ? [...triplesSoFar, ...triplesInner] : [...triplesSoFar];
     }, []);
     return triples;
-  }
+  };
   
   useEffect(() => {
     setFinalAns(getAnswer());
